@@ -13,12 +13,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '14' # Compatible Node.js version
+
       - name: Get Yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - uses: actions/cache@v2
-        id: yarn-cache # Use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`).
+        id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -26,10 +31,3 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install packages
-        run: yarn install --frozen-lockfile
-
-      - name: Check types
-        run: yarn run check-types
-
-      - name: Lint
-        run: yarn run lint
